@@ -56,20 +56,17 @@ def get_picture_by_id(id):
 ######################################################################
 @app.route("/picture", methods=["POST"])
 def create_picture():
-    new_picture = request.get_json()
-
-    # Check if picture with id already exists
-    picture_exists = any(item["id"] == new_picture["id"] for item in data)
-    if picture_exists:
-        return jsonify(message=f"Picture with ID {new_picture['id']} already exists"), 302
-
-    # Append new picture to data list
-    data.append(new_picture)
-
-    # Get the index of the newly added picture
-    index = len(data) - 1
-
-    return jsonify(message="Picture created", id=data[index]["id"]), 201
+    # get data from the json body
+    picture_in = request.json
+    print(picture_in)
+    # if the id is already there, return 303 with the URL for the resource
+    for picture in data:
+        if picture_in["id"] == picture["id"]:
+            return {
+                "Message": f"picture with id {picture_in['id']} already present"
+            }, 302
+    data.append(picture_in)
+    return picture_in, 201
 
 
 ######################################################################
